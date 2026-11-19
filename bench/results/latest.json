@@ -1,0 +1,287 @@
+{
+  "records": 50000,
+  "sizes": {
+    "companies": 5000,
+    "contacts": 40000,
+    "deals": 5000
+  },
+  "machine": {
+    "python": "3.11.18",
+    "platform": "Linux-6.18.44-fc-v653-x86_64-with-glibc2.39",
+    "cpu": "x86_64"
+  },
+  "note": "fake HubSpot server on localhost, same process; not real HubSpot latencies",
+  "initial": {
+    "wall_seconds": 37.0,
+    "api_calls": 2000,
+    "planning_calls": 500,
+    "calls_by_endpoint": {
+      "v3 POST batch/read": 1000,
+      "v3 POST batch/upsert": 500,
+      "v4 assoc batch/associate/default": 500
+    },
+    "plan": {
+      "create": 50000,
+      "writeback_fields": 0,
+      "conflicts": 0,
+      "assoc_add": 50000,
+      "assoc_remove": 0
+    },
+    "report": {
+      "created": 50000,
+      "updated": 0,
+      "written_back": 0,
+      "refreshed": 0,
+      "archived": 0,
+      "forgotten": 0,
+      "crm_deleted": 0,
+      "cas_conflicts": 0,
+      "revalidated": 0,
+      "dead_lettered": 0,
+      "assoc_added": 50000,
+      "assoc_removed": 0,
+      "api_calls": 1500,
+      "watermarks_committed": true,
+      "failed": 0
+    },
+    "retries": 0,
+    "rate_limited": 0,
+    "bisections": 0,
+    "search_restarts": 0,
+    "records_per_second": 1351.4,
+    "verify": {
+      "rows_checked": 50000,
+      "missing_or_mismatched": 0,
+      "duplicate_crm_records": 0,
+      "associations": 50000
+    }
+  },
+  "echo_noop": {
+    "wall_seconds": 4.99,
+    "api_calls": 252,
+    "planning_calls": 252,
+    "calls_by_endpoint": {
+      "v3 POST search": 252
+    },
+    "plan": {
+      "writeback_fields": 0,
+      "conflicts": 0,
+      "assoc_add": 0,
+      "assoc_remove": 0
+    },
+    "report": {
+      "created": 0,
+      "updated": 0,
+      "written_back": 0,
+      "refreshed": 0,
+      "archived": 0,
+      "forgotten": 0,
+      "crm_deleted": 0,
+      "cas_conflicts": 0,
+      "revalidated": 0,
+      "dead_lettered": 0,
+      "assoc_added": 0,
+      "assoc_removed": 0,
+      "api_calls": 0,
+      "watermarks_committed": true,
+      "failed": 0
+    },
+    "retries": 0,
+    "rate_limited": 0,
+    "bisections": 0,
+    "search_restarts": 4
+  },
+  "steady_noop": {
+    "wall_seconds": 2.8,
+    "api_calls": 3,
+    "planning_calls": 3,
+    "calls_by_endpoint": {
+      "v3 POST search": 3
+    },
+    "plan": {
+      "writeback_fields": 0,
+      "conflicts": 0,
+      "assoc_add": 0,
+      "assoc_remove": 0
+    },
+    "report": {
+      "created": 0,
+      "updated": 0,
+      "written_back": 0,
+      "refreshed": 0,
+      "archived": 0,
+      "forgotten": 0,
+      "crm_deleted": 0,
+      "cas_conflicts": 0,
+      "revalidated": 0,
+      "dead_lettered": 0,
+      "assoc_added": 0,
+      "assoc_removed": 0,
+      "api_calls": 0,
+      "watermarks_committed": true,
+      "failed": 0
+    },
+    "retries": 0,
+    "rate_limited": 0,
+    "bisections": 0,
+    "search_restarts": 0
+  },
+  "incremental": {
+    "wall_seconds": 3.25,
+    "api_calls": 22,
+    "planning_calls": 10,
+    "calls_by_endpoint": {
+      "v3 POST batch/read": 13,
+      "v3 POST batch/update": 6,
+      "v3 POST search": 3
+    },
+    "plan": {
+      "update": 500,
+      "refresh": 198,
+      "writeback_fields": 0,
+      "conflicts": 0,
+      "assoc_add": 0,
+      "assoc_remove": 0
+    },
+    "report": {
+      "created": 0,
+      "updated": 500,
+      "written_back": 0,
+      "refreshed": 198,
+      "archived": 0,
+      "forgotten": 0,
+      "crm_deleted": 0,
+      "cas_conflicts": 0,
+      "revalidated": 0,
+      "dead_lettered": 0,
+      "assoc_added": 0,
+      "assoc_removed": 0,
+      "api_calls": 12,
+      "watermarks_committed": true,
+      "failed": 0
+    },
+    "retries": 0,
+    "rate_limited": 0,
+    "bisections": 0,
+    "search_restarts": 0,
+    "edits": {
+      "warehouse_rows": 500,
+      "crm_records": 200
+    },
+    "verify": {
+      "rows_checked": 50000,
+      "missing_or_mismatched": 0,
+      "duplicate_crm_records": 0,
+      "associations": 50000
+    }
+  },
+  "faults": {
+    "wall_seconds": 51.86,
+    "api_calls": 2429,
+    "planning_calls": 514,
+    "calls_by_endpoint": {
+      "v3 POST batch/read": 1033,
+      "v3 POST batch/upsert": 874,
+      "v4 assoc batch/associate/default": 522
+    },
+    "plan": {
+      "create": 50000,
+      "writeback_fields": 0,
+      "conflicts": 0,
+      "assoc_add": 50000,
+      "assoc_remove": 0
+    },
+    "report": {
+      "created": 49975,
+      "updated": 0,
+      "written_back": 0,
+      "refreshed": 0,
+      "archived": 0,
+      "forgotten": 0,
+      "crm_deleted": 0,
+      "cas_conflicts": 0,
+      "revalidated": 0,
+      "dead_lettered": 25,
+      "assoc_added": 49974,
+      "assoc_removed": 0,
+      "api_calls": 1915,
+      "watermarks_committed": true,
+      "failed": 25
+    },
+    "retries": 87,
+    "rate_limited": 43,
+    "bisections": 171,
+    "search_restarts": 0,
+    "dead_letters": 25,
+    "server_stats": {
+      "5xx": 28,
+      "429": 43,
+      "records_written": 50688,
+      "applied_then_5xx": 16
+    },
+    "verify_excluding_dead_letters": {
+      "rows_checked": 49975,
+      "missing_or_mismatched": 0,
+      "duplicate_crm_records": 0,
+      "associations": 49974
+    }
+  },
+  "throttled": {
+    "wall_seconds": 204.48,
+    "api_calls": 2000,
+    "planning_calls": 500,
+    "calls_by_endpoint": {
+      "v3 POST batch/read": 1000,
+      "v3 POST batch/upsert": 500,
+      "v4 assoc batch/associate/default": 500
+    },
+    "plan": {
+      "create": 50000,
+      "writeback_fields": 0,
+      "conflicts": 0,
+      "assoc_add": 50000,
+      "assoc_remove": 0
+    },
+    "report": {
+      "created": 50000,
+      "updated": 0,
+      "written_back": 0,
+      "refreshed": 0,
+      "archived": 0,
+      "forgotten": 0,
+      "crm_deleted": 0,
+      "cas_conflicts": 0,
+      "revalidated": 0,
+      "dead_lettered": 0,
+      "assoc_added": 50000,
+      "assoc_removed": 0,
+      "api_calls": 1500,
+      "watermarks_committed": true,
+      "failed": 0
+    },
+    "retries": 0,
+    "rate_limited": 0,
+    "bisections": 0,
+    "search_restarts": 0,
+    "server_429s": 0,
+    "limiter": {
+      "acquired": 2000,
+      "throttled_waits": 5829,
+      "throttled_seconds": 162.1079999999995,
+      "cooldowns": 0,
+      "cooldown_seconds": 0.0
+    },
+    "verify": {
+      "rows_checked": 50000,
+      "missing_or_mismatched": 0,
+      "duplicate_crm_records": 0,
+      "associations": 50000
+    }
+  },
+  "naive": {
+    "wall_seconds": 237.11,
+    "api_calls": 150000,
+    "records_written": 50000,
+    "projected_hours_at_100_per_10s": 4.17
+  }
+}

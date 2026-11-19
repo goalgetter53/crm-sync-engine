@@ -1,0 +1,73 @@
+# crm-sync mapping: warehouse (dbt marts) <-> HubSpot
+# Policies: source_wins | crm_wins | latest_timestamp_wins | fill_if_empty | never_overwrite
+# Directions: to_crm (default) | bidirectional | to_warehouse
+version: 1
+
+settings:
+  batch_size: 100               # HubSpot batch endpoints accept at most 100 inputs
+  search_lag_seconds: 30        # overlap for the eventually-consistent search index
+  warehouse_lookback_seconds: 300
+  requests_per_10s: 100         # Free/Starter private app; 190 on Pro/Enterprise
+  search_requests_per_second: 4 # HubSpot allows 5/s per account; keep headroom
+  daily_request_limit: 250000
+  revalidate_before_write: true
+
+maps:
+  lifecycle:
+    lead: lead
+    mql: marketingqualifiedlead
+    sql: salesqualifiedlead
+    opportunity: opportunity
+    customer: customer
+
+objects:
+  companies:
+    crm_object: companies
+    table: companies
+    primary_key: id
+    updated_at: updated_at
+    match: { warehouse: id, crm: warehouse_id }
+    fields:
+      - { crm: warehouse_id, warehouse: id }
+      - { crm: name, warehouse: name }
+      - { crm: domain, warehouse: domain, transform: "lower(trim(value))" }
+      - { crm: industry, warehouse: industry, policy: fill_if_empty }
+      - { crm: numberofemployees, warehouse: employees, policy: latest_timestamp_wins }
+
+  contacts:
+    crm_object: contacts
+    table: contacts
+    match: { warehouse: email, crm: email, normalize: "lower(trim(value))" }
+    fields:
+      - { crm: email, warehouse: email, transform: "lower(trim(value))" }
+      - { crm: firstname, warehouse: first_name }
+      - { crm: lastname, warehouse: last_name }
+      # Reps fix phone numbers in HubSpot; those fixes flow back to the warehouse.
+      - crm: phone
+        warehouse: phone
+        transform: "e164(value)"
+        direction: bidirectional
+        policy: latest_timestamp_wins
+      # Reps own lifecycle stage once they touch it.
+      - crm: lifecyclestage
+        warehouse: lifecycle_stage
+        transform: "lookup(value, 'lifecycle')"
+        policy: crm_wins
+      - { crm: jobtitle, warehouse: job_title, policy: fill_if_empty }
+    associations:
+      - { to: companies, via: company_id }
+
+  deals:
+    crm_object: deals
+    table: deals
+    match: { warehouse: id, crm: warehouse_id }
+    fields:
+      - { crm: warehouse_id, warehouse: id }
+      - { crm: dealname, warehouse: name }
+      - { crm: amount, warehouse: amount }
+      - { crm: dealstage, warehouse: stage, policy: crm_wins }
+      - { crm: pipeline, transform: "'default'" }
+      - { crm: closedate, warehouse: close_date, transform: "iso_date(value)", policy: never_overwrite }
+    associations:
+      - { to: companies, via: company_id }
+      - { to: contacts, via: contact_email }
