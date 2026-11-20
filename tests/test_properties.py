@@ -71,7 +71,9 @@ class SyncMachine(RuleBasedStateMachine):
         self.w.tick(5)
         self.w.hub.admin_edit("contacts", rec.id, props)
         key = self.w.contact_key(pk)
-        if "lifecyclestage" in props:
+        # Setting the value the record already has is not a new edit (HubSpot records no change),
+        # so it must not shield the field from a later warehouse change.
+        if "lifecyclestage" in props and rec.props.get("lifecyclestage") != props["lifecyclestage"]:
             self.rep_lifecycle[key] = (props["lifecyclestage"], self.syncs)
         if props.get("jobtitle"):
             self.rep_title[key] = props["jobtitle"]

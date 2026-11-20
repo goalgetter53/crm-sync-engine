@@ -1,0 +1,21 @@
+{
+  "source": "Wikidata SPARQL endpoint",
+  "endpoint": "https://query.wikidata.org/sparql",
+  "license": "CC0 1.0 (Wikidata)",
+  "retrieved": "2026-11-20",
+  "company_classes": [
+    "Q4830453",
+    "Q6881511",
+    "Q891723",
+    "Q783794",
+    "Q167037",
+    "Q1589009",
+    "Q219577"
+  ],
+  "facts_queries": {
+    "employees": "SELECT DISTINCT ?item ?s ?t ?amount ?unit ?rank WHERE {\n  VALUES ?cls { wd:Q4830453 wd:Q6881511 wd:Q891723 wd:Q783794 wd:Q167037 wd:Q1589009 wd:Q219577 }\n  ?item wdt:P31 ?cls .\n  ?item p:P1128 ?s .\n  ?s pq:P585 ?t ; psv:P1128 ?v ; wikibase:rank ?rank .\n  ?v wikibase:quantityAmount ?amount ; wikibase:quantityUnit ?unit .\n}",
+    "revenue_usd": "SELECT DISTINCT ?item ?s ?t ?amount ?unit ?rank WHERE {\n  VALUES ?cls { wd:Q4830453 wd:Q6881511 wd:Q891723 wd:Q783794 wd:Q167037 wd:Q1589009 wd:Q219577 }\n  ?item wdt:P31 ?cls .\n  ?item p:P2139 ?s .\n  ?s pq:P585 ?t ; psv:P2139 ?v ; wikibase:rank ?rank .\n  ?v wikibase:quantityAmount ?amount ; wikibase:quantityUnit ?unit .\n}"
+  },
+  "companies": 11564,
+  "facts": 22322
+}

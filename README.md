@@ -27,6 +27,61 @@ Plan: 2 to create, 2 to update, 1 to archive, 1 field write-back(s), 1 conflict(
 ```
 <sub>Real output from the quickstart below against the fake HubSpot server (some create lines trimmed).</sub>
 
+## Benchmark on real company data
+
+`make bench-real` (`python bench/run_real_bench.py`) syncs **real companies with a real change
+history**, not generated rows. Every number below is copied from
+[`bench/results/real_bench.md`](bench/results/real_bench.md) /
+[`real_bench.json`](bench/results/real_bench.json), which the script writes.
+
+- **Data:** 11,564 companies from Wikidata (query.wikidata.org SPARQL, **CC0**, retrieved
+  **2026-11-20**): companies that carry at least one dated headcount (P1128) or USD revenue
+  (P2139) statement, with name, website/domain, country, HQ city, industry, founding year, plus
+  22,322 dated headcount/revenue statements. Derived CSVs (~2 MB) are committed in
+  [`bench/data/`](bench/data/); raw downloads are cached in `data/real/` (gitignored).
+  Companies only: no contacts, no personal data.
+- **Change stream:** the warehouse table is rebuilt "as of" each date from that dated history
+  (a company exists from inception to dissolution and carries the latest published headcount and
+  revenue). Initial load as of 2015-12-31, then one incremental sync per year-end 2016–2025 and
+  one as of 2026-11-20: **12 runs, 16,855 real inserts/updates/deletes** after the initial load.
+  Mapping: [`examples/mapping_real_companies.yaml`](examples/mapping_real_companies.yaml).
+- **CRM side:** the fake HubSpot, enforcing Free/Starter limits (100 req/10 s, 5 searches/s) and
+  injecting faults the whole time: 18 × 429, 9 × 5xx, 5 × committed-then-502, 4 timeouts
+  (committed, response held past the 1 s client timeout) and 12 partial batch failures (207).
+
+| Metric | Engine | Naive (1 request per record) |
+|---|---:|---:|
+| API calls, all 12 runs | **1,031** | **54,366** (52.7× more) |
+| Initial load (10,328 companies) | 323 calls, 32.93 s at 100 req/10 s (313.6 records/s) | 20,656 calls; projected 1.51 h for all runs at 100 req/10 s |
+| 429s seen / retries / dead-lettered then retried | 18 / 36 / 12 | n/a (no limits, no faults) |
+| Server-side 429s from the real limits | 0 | n/a |
+| Mismatches after convergence (11,082 rows × 10 fields) | **0** (0 missing, 0 duplicates, 0 orphans) | not checked |
+| Idempotence: writes on two re-runs | **0, 0** (1 API call each) | n/a |
+
+Unthrottled and fault-free, the same initial load took 5.07 s (2,037.1 records/s, 312 calls).
+The naive baseline is generous: it is handed the exact delta for free and only lacks batching.
+
+> **Honest scope.** The data and its history are real; the CRM is still the repo's **fake
+> HubSpot**, which mimics the documented API and limits on localhost. API-call counts transfer to
+> HubSpot, wall-clock times do not. The yearly replay comes from dated Wikidata statements, not
+> from a real CRM's edit log, and only headcount, revenue and company existence change over time
+> (names, websites and industries are today's values). No live HubSpot portal was used.
+
+**Run it against your own HubSpot portal** (I have not done this; it needs your private-app
+token with `crm.objects.companies.read` and `.write`, and two custom company properties,
+`warehouse_id` (unique) and `wikidata_industry`). The token is read from the environment only:
+
+```bash
+python bench/run_real_bench.py --load-warehouse sqlite:///real_wh.db --as-of 2026-11-20
+export WAREHOUSE_URL=sqlite:///real_wh.db STATE_URL=sqlite:///real_state.db \
+       HUBSPOT_BASE_URL=https://api.hubapi.com
+read -rs HUBSPOT_ACCESS_TOKEN && export HUBSPOT_ACCESS_TOKEN   # paste the token; never commit it
+crm-sync plan  examples/mapping_real_companies.yaml            # read-only preview
+crm-sync apply examples/mapping_real_companies.yaml            # writes ~11k companies to the portal
+```
+
+The older numbers in [section 6](#6-benchmarks-measured) are from **generated** records.
+
 ---
 
 ## 1. The problem
@@ -184,7 +239,7 @@ between the two sides. The validator enforces this. The reasoning is in
 
 ## 5. Guarantees and how they are tested
 
-There are **113 pytest tests**, including a Hypothesis state machine that runs random histories of
+There are **124 pytest tests**, including a Hypothesis state machine that runs random histories of
 warehouse edits, rep edits, inserts, deletes, CRM-side deletions, flaky networks and *edits made
 during a sync*. CI runs it with 25 examples on every PR and with 300 examples on `main`; a
 300-example soak passed locally.
@@ -211,9 +266,13 @@ The tests caught two real bugs during development:
 2. **The rate-limit integration test** showed that a plain token bucket overshoots HubSpot's
    *rolling* 10-second window right after a burst. A rolling-window guard now fixes this.
 
-## 6. Benchmarks (measured)
+## 6. Benchmarks (measured, generated data)
 
-Command: `python bench/run_bench.py`. The run synced **50,000 records** (5k companies, 40k contacts,
+For the benchmark on real public company data, see
+[Benchmark on real company data](#benchmark-on-real-company-data) at the top.
+
+Command: `python bench/run_bench.py`. The run synced **50,000 generated records** (synthetic data
+from `crm_sync/demo.py`: 5k companies, 40k contacts,
 5k deals, and 50k associations) over real HTTP to the fake server on localhost. Client and server
 shared one Python 3.11 process on a 2-vCPU Xeon VM. Raw output is in
 [`bench/results/latest.json`](bench/results/latest.json) and the table in
@@ -233,7 +292,8 @@ shared one Python 3.11 process on a 2-vCPU Xeon VM. Raw output is in
 | Incremental: 500 warehouse edits + 200 rep edits | 22 | 3.3 s | 500 updates sent; the 200 `crm_wins` rep edits kept; 0 mismatches |
 | Faults: random 429s, 5xx, lost responses + 25 poison rows | 2,429 | 51.9 s | Injected 43 × 429, 28 × 5xx, 16 committed-then-502. 87 retries, 171 bisections. **Exactly the 25 poison rows dead-lettered**; the other 49,975 rows have 0 mismatches and 0 duplicates |
 
-The takeaway: **75× fewer API calls** than one-request-per-record (2,000 vs 150,000). Under a
+The takeaway on generated data: **75× fewer API calls** than one-request-per-record (2,000 vs
+150,000). Under a
 Free/Starter rate limit that is **about 3.4 minutes measured against a projected 4.2 hours**. On
 average the batched path spends 4 calls per 100 records: a match read, a revalidation read, an
 upsert and an association batch. Turning revalidation off would save a quarter of the calls, at the cost of
@@ -287,12 +347,25 @@ because no Docker daemon was available.
 and single-record CRUD) and v4 associations, plus a `/_admin` control plane for tests.
 
 **Modelled:** a rolling 10 s limit and a daily limit, both answered with 429 + `Retry-After` and
-`X-HubSpot-RateLimit-*` headers; 5 searches/s; max 200 results per search page; 400 when paging
-past 10,000 results; a configurable search-index lag; a limit of 100 inputs per batch; whole-batch
-400 on any invalid value; 207 for unknown ids; unknown, read-only, enumeration, number, date,
-email and unique-value validation; lower-casing of emails and canonical numbers; seeded random
-429/5xx; "committed then 502"; an `Idempotency-Key` cache that is off by default because real
-HubSpot has none.
+`X-HubSpot-RateLimit-*` headers (none on search responses); 5 searches/s; max 200 results per
+search page; 400 when paging past 10,000 results; a configurable search-index lag; a limit of 100
+inputs per batch; whole-batch 400 on any invalid value; 207 for unknown ids; unknown, read-only,
+enumeration, number, date, email and unique-value validation; lower-casing of emails and canonical
+numbers; seeded random 429/5xx; "committed then 502"; timeouts (committed, response held back past
+the client's timeout); 207 partial batch failures; an `Idempotency-Key` cache that is off by
+default because real HubSpot has none.
+
+**Limits checked against HubSpot's public docs on 2026-11-20:**
+[usage guidelines](https://developers.hubspot.com/docs/developer-tooling/platform/usage-guidelines)
+(private apps: Free/Starter 100 requests/10 s per app and 250,000/day per account; Professional
+190/10 s and 625,000/day; Enterprise 190/10 s and 1,000,000/day; 429 body with `errorType`
+`RATE_LIMIT`, `policyName`, `correlationId`, `requestId`; search responses carry no rate-limit
+headers) and the
+[CRM search reference](https://developers.hubspot.com/docs/api-reference/latest/crm/search-the-crm)
+(5 requests/s per account, 200 objects per page, 10,000 results per query, 400 beyond that, a
+short indexing delay). The limit values the repo used already matched; the check added `requestId` to the
+429 body and a policy-specific 429 message. The 100-inputs batch limit was not restated on the
+pages checked and is kept from the batch endpoint behaviour.
 
 **Not modelled:** real latency, association labels, custom objects, property history, merges,
 webhooks, and HubSpot-side defaults set on create.

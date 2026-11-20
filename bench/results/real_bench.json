@@ -1,0 +1,1931 @@
+{
+  "generated": "2026-11-20",
+  "machine": {
+    "python": "3.11.18",
+    "platform": "Linux-6.18.44-fc-v726-x86_64-with-glibc2.39",
+    "cpu": "x86_64"
+  },
+  "note": "CRM side is the repo's fake HubSpot on localhost (same process), enforcing HubSpot's documented Free/Starter limits; API-call counts transfer to HubSpot, wall-clock times do not.",
+  "data": {
+    "source": "Wikidata SPARQL endpoint",
+    "endpoint": "https://query.wikidata.org/sparql",
+    "license": "CC0 1.0 (Wikidata)",
+    "retrieved": "2026-11-20",
+    "company_classes": [
+      "Q4830453",
+      "Q6881511",
+      "Q891723",
+      "Q783794",
+      "Q167037",
+      "Q1589009",
+      "Q219577"
+    ],
+    "facts_queries": {
+      "employees": "SELECT DISTINCT ?item ?s ?t ?amount ?unit ?rank WHERE {\n  VALUES ?cls { wd:Q4830453 wd:Q6881511 wd:Q891723 wd:Q783794 wd:Q167037 wd:Q1589009 wd:Q219577 }\n  ?item wdt:P31 ?cls .\n  ?item p:P1128 ?s .\n  ?s pq:P585 ?t ; psv:P1128 ?v ; wikibase:rank ?rank .\n  ?v wikibase:quantityAmount ?amount ; wikibase:quantityUnit ?unit .\n}",
+      "revenue_usd": "SELECT DISTINCT ?item ?s ?t ?amount ?unit ?rank WHERE {\n  VALUES ?cls { wd:Q4830453 wd:Q6881511 wd:Q891723 wd:Q783794 wd:Q167037 wd:Q1589009 wd:Q219577 }\n  ?item wdt:P31 ?cls .\n  ?item p:P2139 ?s .\n  ?s pq:P585 ?t ; psv:P2139 ?v ; wikibase:rank ?rank .\n  ?v wikibase:quantityAmount ?amount ; wikibase:quantityUnit ?unit .\n}"
+    },
+    "companies": 11564,
+    "facts": 22322
+  },
+  "checkpoints": [
+    "2015-12-31",
+    "2016-12-31",
+    "2017-12-31",
+    "2018-12-31",
+    "2019-12-31",
+    "2020-12-31",
+    "2021-12-31",
+    "2022-12-31",
+    "2023-12-31",
+    "2024-12-31",
+    "2025-12-31",
+    "2026-11-20"
+  ],
+  "changes_replayed": 16855,
+  "faults_config": {
+    "p_429": 0.02,
+    "p_5xx": 0.01,
+    "p_apply_then_5xx": 0.01,
+    "p_timeout": 0.01,
+    "timeout_delay_s": 2.0,
+    "p_partial_batch": 0.05
+  },
+  "faults_injected": {
+    "429_injected": 18,
+    "429_rate_limit": 0,
+    "5xx": 9,
+    "applied_then_5xx": 5,
+    "timeouts": 4,
+    "partial_batch": 12
+  },
+  "ratio_naive_over_engine": 52.7,
+  "engine": {
+    "runs": [
+      {
+        "wall_seconds": 32.93,
+        "api_calls": 323,
+        "planning_calls": 109,
+        "calls_by_endpoint": {
+          "v3 POST batch/read": 215,
+          "v3 POST batch/upsert": 108
+        },
+        "plan": {
+          "create": 10328,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 10325,
+          "updated": 0,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 0,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 3,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 214,
+          "watermarks_committed": true,
+          "failed": 3
+        },
+        "retries": 11,
+        "rate_limited": 5,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 2,
+        "server_errors_seen": 4,
+        "writes": 10325,
+        "as_of": "2015-12-31",
+        "kind": "initial",
+        "warehouse_delta": {
+          "inserts": 10328,
+          "updates": 0,
+          "deletes": 0,
+          "changed_fields": {}
+        },
+        "records_in_warehouse": 10328,
+        "injected": {
+          "5xx": 3,
+          "timeouts": 2,
+          "429": 5,
+          "429_injected": 5,
+          "records_written": 10425,
+          "applied_then_5xx": 1,
+          "partial_batch": 3
+        },
+        "records_per_second": 313.6
+      },
+      {
+        "wall_seconds": 14.15,
+        "api_calls": 94,
+        "planning_calls": 65,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 26,
+          "v3 POST batch/update": 13,
+          "v3 POST batch/upsert": 2,
+          "v3 POST search": 52
+        },
+        "plan": {
+          "update": 1078,
+          "create": 180,
+          "archive": 27,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 180,
+          "updated": 1078,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 27,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 29,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 2,
+        "rate_limited": 1,
+        "bisections": 0,
+        "search_restarts": 1,
+        "transport_errors": 0,
+        "server_errors_seen": 1,
+        "writes": 1285,
+        "as_of": "2016-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 177,
+          "updates": 1078,
+          "deletes": 27,
+          "changed_fields": {
+            "employees": 675,
+            "revenue_usd": 457
+          }
+        },
+        "records_in_warehouse": 10478,
+        "injected": {
+          "429": 1,
+          "429_injected": 1,
+          "records_written": 1336,
+          "applied_then_5xx": 1
+        },
+        "records_per_second": 90.6
+      },
+      {
+        "wall_seconds": 2.44,
+        "api_calls": 53,
+        "planning_calls": 22,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 30,
+          "v3 POST batch/update": 13,
+          "v3 POST batch/upsert": 2,
+          "v3 POST search": 7
+        },
+        "plan": {
+          "update": 1255,
+          "create": 184,
+          "archive": 13,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 184,
+          "updated": 1254,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 13,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 1,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 31,
+          "watermarks_committed": true,
+          "failed": 1
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 1451,
+        "as_of": "2017-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 184,
+          "updates": 1255,
+          "deletes": 13,
+          "changed_fields": {
+            "employees": 835,
+            "revenue_usd": 455
+          }
+        },
+        "records_in_warehouse": 10649,
+        "injected": {
+          "records_written": 1438,
+          "partial_batch": 1
+        },
+        "records_per_second": 595.1
+      },
+      {
+        "wall_seconds": 6.67,
+        "api_calls": 72,
+        "planning_calls": 29,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 42,
+          "v3 POST batch/update": 19,
+          "v3 POST batch/upsert": 2,
+          "v3 POST search": 8
+        },
+        "plan": {
+          "update": 1849,
+          "create": 130,
+          "archive": 20,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 130,
+          "updated": 1848,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 20,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 1,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 43,
+          "watermarks_committed": true,
+          "failed": 1
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 1998,
+        "as_of": "2018-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 130,
+          "updates": 1848,
+          "deletes": 20,
+          "changed_fields": {
+            "employees": 1376,
+            "revenue_usd": 521
+          }
+        },
+        "records_in_warehouse": 10759,
+        "injected": {
+          "records_written": 1978,
+          "partial_batch": 1
+        },
+        "records_per_second": 299.6
+      },
+      {
+        "wall_seconds": 7.1,
+        "api_calls": 64,
+        "planning_calls": 28,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 35,
+          "v3 POST batch/update": 15,
+          "v3 POST batch/upsert": 2,
+          "v3 POST search": 11
+        },
+        "plan": {
+          "update": 1408,
+          "create": 121,
+          "archive": 26,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 121,
+          "updated": 1408,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 26,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 36,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 2,
+        "rate_limited": 2,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 1555,
+        "as_of": "2019-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 121,
+          "updates": 1407,
+          "deletes": 26,
+          "changed_fields": {
+            "employees": 932,
+            "revenue_usd": 541
+          }
+        },
+        "records_in_warehouse": 10854,
+        "injected": {
+          "429": 2,
+          "429_injected": 2,
+          "records_written": 1529
+        },
+        "records_per_second": 218.9
+      },
+      {
+        "wall_seconds": 6.02,
+        "api_calls": 60,
+        "planning_calls": 25,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 35,
+          "v3 POST batch/update": 14,
+          "v3 POST batch/upsert": 2,
+          "v3 POST search": 8
+        },
+        "plan": {
+          "update": 1323,
+          "create": 114,
+          "archive": 26,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 113,
+          "updated": 1322,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 26,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 2,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 35,
+          "watermarks_committed": true,
+          "failed": 2
+        },
+        "retries": 3,
+        "rate_limited": 1,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 2,
+        "writes": 1461,
+        "as_of": "2020-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 114,
+          "updates": 1323,
+          "deletes": 26,
+          "changed_fields": {
+            "employees": 881,
+            "revenue_usd": 506
+          }
+        },
+        "records_in_warehouse": 10942,
+        "injected": {
+          "5xx": 2,
+          "429": 1,
+          "429_injected": 1,
+          "records_written": 1435,
+          "partial_batch": 2
+        },
+        "records_per_second": 243.0
+      },
+      {
+        "wall_seconds": 3.01,
+        "api_calls": 55,
+        "planning_calls": 23,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 30,
+          "v3 POST batch/update": 15,
+          "v3 POST batch/upsert": 1,
+          "v3 POST search": 8
+        },
+        "plan": {
+          "update": 1390,
+          "create": 90,
+          "archive": 20,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 90,
+          "updated": 1390,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 20,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 32,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 1,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 1,
+        "writes": 1500,
+        "as_of": "2021-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 89,
+          "updates": 1390,
+          "deletes": 20,
+          "changed_fields": {
+            "employees": 933,
+            "revenue_usd": 506
+          }
+        },
+        "records_in_warehouse": 11011,
+        "injected": {
+          "records_written": 1580,
+          "applied_then_5xx": 1
+        },
+        "records_per_second": 498.0
+      },
+      {
+        "wall_seconds": 6.39,
+        "api_calls": 76,
+        "planning_calls": 30,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 45,
+          "v3 POST batch/update": 21,
+          "v3 POST batch/upsert": 1,
+          "v3 POST search": 8
+        },
+        "plan": {
+          "update": 2009,
+          "create": 64,
+          "archive": 22,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 64,
+          "updated": 2007,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 22,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 2,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 46,
+          "watermarks_committed": true,
+          "failed": 2
+        },
+        "retries": 1,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 1,
+        "writes": 2093,
+        "as_of": "2022-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 64,
+          "updates": 2009,
+          "deletes": 22,
+          "changed_fields": {
+            "employees": 1549,
+            "revenue_usd": 491
+          }
+        },
+        "records_in_warehouse": 11053,
+        "injected": {
+          "5xx": 1,
+          "records_written": 2071,
+          "partial_batch": 2
+        },
+        "records_per_second": 327.9
+      },
+      {
+        "wall_seconds": 10.91,
+        "api_calls": 87,
+        "planning_calls": 37,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 49,
+          "v3 POST batch/update": 22,
+          "v3 POST batch/upsert": 2,
+          "v3 POST search": 13
+        },
+        "plan": {
+          "update": 2189,
+          "create": 41,
+          "archive": 16,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 41,
+          "updated": 2188,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 16,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 1,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 50,
+          "watermarks_committed": true,
+          "failed": 1
+        },
+        "retries": 6,
+        "rate_limited": 4,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 2,
+        "writes": 2245,
+        "as_of": "2023-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 41,
+          "updates": 2188,
+          "deletes": 16,
+          "changed_fields": {
+            "employees": 1973,
+            "revenue_usd": 242
+          }
+        },
+        "records_in_warehouse": 11078,
+        "injected": {
+          "5xx": 2,
+          "429": 4,
+          "429_injected": 4,
+          "records_written": 2229,
+          "partial_batch": 1
+        },
+        "records_per_second": 205.8
+      },
+      {
+        "wall_seconds": 4.68,
+        "api_calls": 50,
+        "planning_calls": 25,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 24,
+          "v3 POST batch/update": 11,
+          "v3 POST batch/upsert": 1,
+          "v3 POST search": 13
+        },
+        "plan": {
+          "update": 1064,
+          "create": 20,
+          "archive": 17,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 19,
+          "updated": 1063,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 17,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 2,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 25,
+          "watermarks_committed": true,
+          "failed": 2
+        },
+        "retries": 1,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 1,
+        "writes": 1099,
+        "as_of": "2024-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 20,
+          "updates": 1064,
+          "deletes": 17,
+          "changed_fields": {
+            "employees": 943,
+            "revenue_usd": 148
+          }
+        },
+        "records_in_warehouse": 11081,
+        "injected": {
+          "5xx": 1,
+          "records_written": 1082,
+          "partial_batch": 2
+        },
+        "records_per_second": 235.3
+      },
+      {
+        "wall_seconds": 2.35,
+        "api_calls": 38,
+        "planning_calls": 16,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 20,
+          "v3 POST batch/update": 9,
+          "v3 POST batch/upsert": 2,
+          "v3 POST search": 6
+        },
+        "plan": {
+          "update": 803,
+          "create": 22,
+          "archive": 12,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 22,
+          "updated": 803,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 12,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 22,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 1,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 1,
+        "writes": 837,
+        "as_of": "2025-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 21,
+          "updates": 802,
+          "deletes": 12,
+          "changed_fields": {
+            "employees": 742,
+            "revenue_usd": 86
+          }
+        },
+        "records_in_warehouse": 11090,
+        "injected": {
+          "records_written": 847,
+          "applied_then_5xx": 1
+        },
+        "records_per_second": 355.3
+      },
+      {
+        "wall_seconds": 8.5,
+        "api_calls": 59,
+        "planning_calls": 23,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 35,
+          "v3 POST batch/update": 17,
+          "v3 POST batch/upsert": 1,
+          "v3 POST search": 5
+        },
+        "plan": {
+          "update": 1311,
+          "create": 6,
+          "archive": 14,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 6,
+          "updated": 1311,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 14,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 36,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 8,
+        "rate_limited": 5,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 2,
+        "server_errors_seen": 1,
+        "writes": 1331,
+        "as_of": "2026-11-20",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 6,
+          "updates": 1311,
+          "deletes": 14,
+          "changed_fields": {
+            "employees": 1308,
+            "revenue_usd": 6
+          }
+        },
+        "records_in_warehouse": 11082,
+        "injected": {
+          "timeouts": 2,
+          "429": 5,
+          "429_injected": 5,
+          "records_written": 1417,
+          "applied_then_5xx": 1
+        },
+        "records_per_second": 156.6
+      }
+    ],
+    "converge_runs": [
+      {
+        "wall_seconds": 1.65,
+        "api_calls": 7,
+        "planning_calls": 7,
+        "calls_by_endpoint": {
+          "v3 POST search": 7
+        },
+        "plan": {
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 0,
+          "updated": 0,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 0,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 0,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 0
+      }
+    ],
+    "verify_after_convergence": {
+      "warehouse_rows": 11082,
+      "crm_live_records": 11082,
+      "fields_checked_per_row": 10,
+      "missing_in_crm": 0,
+      "mismatched_rows": 0,
+      "mismatched_fields": 0,
+      "crm_records_without_warehouse_row": 0,
+      "duplicate_crm_records": 0
+    },
+    "idempotence_runs": [
+      {
+        "wall_seconds": 0.62,
+        "api_calls": 1,
+        "planning_calls": 1,
+        "calls_by_endpoint": {
+          "v3 POST search": 1
+        },
+        "plan": {
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 0,
+          "updated": 0,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 0,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 0,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 0
+      },
+      {
+        "wall_seconds": 0.56,
+        "api_calls": 1,
+        "planning_calls": 1,
+        "calls_by_endpoint": {
+          "v3 POST search": 1
+        },
+        "plan": {
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 0,
+          "updated": 0,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 0,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 0,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 0
+      }
+    ],
+    "totals_replay": {
+      "runs": 12,
+      "api_calls": 1031,
+      "writes": 27180,
+      "rate_limited_429s_seen_by_client": 18,
+      "retries": 36,
+      "bisections": 0,
+      "dead_lettered": 12,
+      "client_timeouts": 4,
+      "server_errors_seen_by_client": 14,
+      "wall_seconds": 136.5
+    },
+    "totals_including_convergence_and_idempotence": {
+      "api_calls": 1040
+    },
+    "server_stats": {
+      "5xx": 9,
+      "timeouts": 4,
+      "429": 18,
+      "429_injected": 18,
+      "records_written": 27367,
+      "applied_then_5xx": 5,
+      "partial_batch": 12
+    },
+    "limiter": {
+      "acquired": 1040,
+      "throttled_waits": 1486,
+      "throttled_seconds": 72.10600000000007,
+      "cooldowns": 18,
+      "cooldown_seconds": 3.600000000000001
+    }
+  },
+  "unthrottled": {
+    "runs": [
+      {
+        "wall_seconds": 5.07,
+        "api_calls": 312,
+        "planning_calls": 104,
+        "calls_by_endpoint": {
+          "v3 POST batch/read": 208,
+          "v3 POST batch/upsert": 104
+        },
+        "plan": {
+          "create": 10328,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 10328,
+          "updated": 0,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 0,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 208,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 10328,
+        "as_of": "2015-12-31",
+        "kind": "initial",
+        "warehouse_delta": {
+          "inserts": 10328,
+          "updates": 0,
+          "deletes": 0,
+          "changed_fields": {}
+        },
+        "records_in_warehouse": 10328,
+        "injected": {
+          "records_written": 10328
+        },
+        "records_per_second": 2037.1
+      },
+      {
+        "wall_seconds": 2.29,
+        "api_calls": 93,
+        "planning_calls": 66,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 26,
+          "v3 POST batch/update": 11,
+          "v3 POST batch/upsert": 2,
+          "v3 POST search": 53
+        },
+        "plan": {
+          "update": 1078,
+          "create": 177,
+          "archive": 27,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 177,
+          "updated": 1078,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 27,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 27,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 1,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 1282,
+        "as_of": "2016-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 177,
+          "updates": 1078,
+          "deletes": 27,
+          "changed_fields": {
+            "employees": 675,
+            "revenue_usd": 457
+          }
+        },
+        "records_in_warehouse": 10478,
+        "injected": {
+          "records_written": 1255
+        },
+        "records_per_second": 559.8
+      },
+      {
+        "wall_seconds": 1.98,
+        "api_calls": 53,
+        "planning_calls": 22,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 30,
+          "v3 POST batch/update": 13,
+          "v3 POST batch/upsert": 2,
+          "v3 POST search": 7
+        },
+        "plan": {
+          "update": 1255,
+          "create": 184,
+          "archive": 13,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 184,
+          "updated": 1255,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 13,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 31,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 1452,
+        "as_of": "2017-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 184,
+          "updates": 1255,
+          "deletes": 13,
+          "changed_fields": {
+            "employees": 835,
+            "revenue_usd": 455
+          }
+        },
+        "records_in_warehouse": 10649,
+        "injected": {
+          "records_written": 1439
+        },
+        "records_per_second": 733.3
+      },
+      {
+        "wall_seconds": 1.98,
+        "api_calls": 72,
+        "planning_calls": 29,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 42,
+          "v3 POST batch/update": 19,
+          "v3 POST batch/upsert": 2,
+          "v3 POST search": 8
+        },
+        "plan": {
+          "update": 1848,
+          "create": 130,
+          "archive": 20,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 130,
+          "updated": 1848,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 20,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 43,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 1998,
+        "as_of": "2018-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 130,
+          "updates": 1848,
+          "deletes": 20,
+          "changed_fields": {
+            "employees": 1376,
+            "revenue_usd": 521
+          }
+        },
+        "records_in_warehouse": 10759,
+        "injected": {
+          "records_written": 1978
+        },
+        "records_per_second": 1009.1
+      },
+      {
+        "wall_seconds": 2.05,
+        "api_calls": 62,
+        "planning_calls": 27,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 34,
+          "v3 POST batch/update": 15,
+          "v3 POST batch/upsert": 2,
+          "v3 POST search": 10
+        },
+        "plan": {
+          "update": 1407,
+          "create": 121,
+          "archive": 26,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 121,
+          "updated": 1407,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 26,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 35,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 1554,
+        "as_of": "2019-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 121,
+          "updates": 1407,
+          "deletes": 26,
+          "changed_fields": {
+            "employees": 932,
+            "revenue_usd": 541
+          }
+        },
+        "records_in_warehouse": 10854,
+        "injected": {
+          "records_written": 1528
+        },
+        "records_per_second": 758.0
+      },
+      {
+        "wall_seconds": 1.73,
+        "api_calls": 57,
+        "planning_calls": 24,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 32,
+          "v3 POST batch/update": 14,
+          "v3 POST batch/upsert": 2,
+          "v3 POST search": 8
+        },
+        "plan": {
+          "update": 1323,
+          "create": 114,
+          "archive": 26,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 114,
+          "updated": 1323,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 26,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 33,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 1463,
+        "as_of": "2020-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 114,
+          "updates": 1323,
+          "deletes": 26,
+          "changed_fields": {
+            "employees": 881,
+            "revenue_usd": 506
+          }
+        },
+        "records_in_warehouse": 10942,
+        "injected": {
+          "records_written": 1437
+        },
+        "records_per_second": 845.7
+      },
+      {
+        "wall_seconds": 2.1,
+        "api_calls": 54,
+        "planning_calls": 23,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 30,
+          "v3 POST batch/update": 14,
+          "v3 POST batch/upsert": 1,
+          "v3 POST search": 8
+        },
+        "plan": {
+          "update": 1390,
+          "create": 89,
+          "archive": 20,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 89,
+          "updated": 1390,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 20,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 31,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 1499,
+        "as_of": "2021-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 89,
+          "updates": 1390,
+          "deletes": 20,
+          "changed_fields": {
+            "employees": 933,
+            "revenue_usd": 506
+          }
+        },
+        "records_in_warehouse": 11011,
+        "injected": {
+          "records_written": 1479
+        },
+        "records_per_second": 713.8
+      },
+      {
+        "wall_seconds": 2.25,
+        "api_calls": 75,
+        "planning_calls": 30,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 44,
+          "v3 POST batch/update": 21,
+          "v3 POST batch/upsert": 1,
+          "v3 POST search": 8
+        },
+        "plan": {
+          "update": 2009,
+          "create": 64,
+          "archive": 22,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 64,
+          "updated": 2009,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 22,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 45,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 2095,
+        "as_of": "2022-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 64,
+          "updates": 2009,
+          "deletes": 22,
+          "changed_fields": {
+            "employees": 1549,
+            "revenue_usd": 491
+          }
+        },
+        "records_in_warehouse": 11053,
+        "injected": {
+          "records_written": 2073
+        },
+        "records_per_second": 931.1
+      },
+      {
+        "wall_seconds": 2.45,
+        "api_calls": 81,
+        "planning_calls": 34,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 46,
+          "v3 POST batch/update": 22,
+          "v3 POST batch/upsert": 1,
+          "v3 POST search": 11
+        },
+        "plan": {
+          "update": 2188,
+          "create": 41,
+          "archive": 16,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 41,
+          "updated": 2188,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 16,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 47,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 2245,
+        "as_of": "2023-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 41,
+          "updates": 2188,
+          "deletes": 16,
+          "changed_fields": {
+            "employees": 1973,
+            "revenue_usd": 242
+          }
+        },
+        "records_in_warehouse": 11078,
+        "injected": {
+          "records_written": 2229
+        },
+        "records_per_second": 916.3
+      },
+      {
+        "wall_seconds": 1.62,
+        "api_calls": 49,
+        "planning_calls": 24,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 24,
+          "v3 POST batch/update": 11,
+          "v3 POST batch/upsert": 1,
+          "v3 POST search": 12
+        },
+        "plan": {
+          "update": 1064,
+          "create": 20,
+          "archive": 17,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 20,
+          "updated": 1064,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 17,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 25,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 1101,
+        "as_of": "2024-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 20,
+          "updates": 1064,
+          "deletes": 17,
+          "changed_fields": {
+            "employees": 943,
+            "revenue_usd": 148
+          }
+        },
+        "records_in_warehouse": 11081,
+        "injected": {
+          "records_written": 1084
+        },
+        "records_per_second": 679.6
+      },
+      {
+        "wall_seconds": 1.96,
+        "api_calls": 37,
+        "planning_calls": 16,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 20,
+          "v3 POST batch/update": 9,
+          "v3 POST batch/upsert": 1,
+          "v3 POST search": 6
+        },
+        "plan": {
+          "update": 802,
+          "create": 21,
+          "archive": 12,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 21,
+          "updated": 802,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 12,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 21,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 835,
+        "as_of": "2025-12-31",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 21,
+          "updates": 802,
+          "deletes": 12,
+          "changed_fields": {
+            "employees": 742,
+            "revenue_usd": 86
+          }
+        },
+        "records_in_warehouse": 11090,
+        "injected": {
+          "records_written": 823
+        },
+        "records_per_second": 426.0
+      },
+      {
+        "wall_seconds": 2.37,
+        "api_calls": 51,
+        "planning_calls": 20,
+        "calls_by_endpoint": {
+          "v3 POST batch/archive": 1,
+          "v3 POST batch/read": 30,
+          "v3 POST batch/update": 14,
+          "v3 POST batch/upsert": 1,
+          "v3 POST search": 5
+        },
+        "plan": {
+          "update": 1311,
+          "create": 6,
+          "archive": 14,
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 6,
+          "updated": 1311,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 14,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 31,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 1331,
+        "as_of": "2026-11-20",
+        "kind": "incremental",
+        "warehouse_delta": {
+          "inserts": 6,
+          "updates": 1311,
+          "deletes": 14,
+          "changed_fields": {
+            "employees": 1308,
+            "revenue_usd": 6
+          }
+        },
+        "records_in_warehouse": 11082,
+        "injected": {
+          "records_written": 1317
+        },
+        "records_per_second": 561.6
+      }
+    ],
+    "converge_runs": [
+      {
+        "wall_seconds": 1.18,
+        "api_calls": 7,
+        "planning_calls": 7,
+        "calls_by_endpoint": {
+          "v3 POST search": 7
+        },
+        "plan": {
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 0,
+          "updated": 0,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 0,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 0,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 0
+      }
+    ],
+    "verify_after_convergence": {
+      "warehouse_rows": 11082,
+      "crm_live_records": 11082,
+      "fields_checked_per_row": 10,
+      "missing_in_crm": 0,
+      "mismatched_rows": 0,
+      "mismatched_fields": 0,
+      "crm_records_without_warehouse_row": 0,
+      "duplicate_crm_records": 0
+    },
+    "idempotence_runs": [
+      {
+        "wall_seconds": 1.1,
+        "api_calls": 1,
+        "planning_calls": 1,
+        "calls_by_endpoint": {
+          "v3 POST search": 1
+        },
+        "plan": {
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 0,
+          "updated": 0,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 0,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 0,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 0
+      },
+      {
+        "wall_seconds": 0.84,
+        "api_calls": 1,
+        "planning_calls": 1,
+        "calls_by_endpoint": {
+          "v3 POST search": 1
+        },
+        "plan": {
+          "writeback_fields": 0,
+          "conflicts": 0,
+          "assoc_add": 0,
+          "assoc_remove": 0
+        },
+        "report": {
+          "created": 0,
+          "updated": 0,
+          "written_back": 0,
+          "refreshed": 0,
+          "archived": 0,
+          "forgotten": 0,
+          "crm_deleted": 0,
+          "cas_conflicts": 0,
+          "revalidated": 0,
+          "dead_lettered": 0,
+          "assoc_added": 0,
+          "assoc_removed": 0,
+          "api_calls": 0,
+          "watermarks_committed": true,
+          "failed": 0
+        },
+        "retries": 0,
+        "rate_limited": 0,
+        "bisections": 0,
+        "search_restarts": 0,
+        "transport_errors": 0,
+        "server_errors_seen": 0,
+        "writes": 0
+      }
+    ],
+    "totals_replay": {
+      "runs": 12,
+      "api_calls": 996,
+      "writes": 27183,
+      "rate_limited_429s_seen_by_client": 0,
+      "retries": 0,
+      "bisections": 0,
+      "dead_lettered": 0,
+      "client_timeouts": 0,
+      "server_errors_seen_by_client": 0,
+      "wall_seconds": 60.0
+    },
+    "totals_including_convergence_and_idempotence": {
+      "api_calls": 1005
+    },
+    "server_stats": {
+      "records_written": 26970
+    },
+    "limiter": {
+      "acquired": 1005,
+      "throttled_waits": 0,
+      "throttled_seconds": 0.0,
+      "cooldowns": 0,
+      "cooldown_seconds": 0.0
+    }
+  },
+  "naive": {
+    "runs": [
+      {
+        "as_of": "2015-12-31",
+        "api_calls": 20656,
+        "wall_seconds": 36.11
+      },
+      {
+        "as_of": "2016-12-31",
+        "api_calls": 2564,
+        "wall_seconds": 4.23
+      },
+      {
+        "as_of": "2017-12-31",
+        "api_calls": 2904,
+        "wall_seconds": 4.87
+      },
+      {
+        "as_of": "2018-12-31",
+        "api_calls": 3996,
+        "wall_seconds": 6.18
+      },
+      {
+        "as_of": "2019-12-31",
+        "api_calls": 3108,
+        "wall_seconds": 5.01
+      },
+      {
+        "as_of": "2020-12-31",
+        "api_calls": 2926,
+        "wall_seconds": 4.54
+      },
+      {
+        "as_of": "2021-12-31",
+        "api_calls": 2998,
+        "wall_seconds": 5.01
+      },
+      {
+        "as_of": "2022-12-31",
+        "api_calls": 4190,
+        "wall_seconds": 6.89
+      },
+      {
+        "as_of": "2023-12-31",
+        "api_calls": 4490,
+        "wall_seconds": 6.65
+      },
+      {
+        "as_of": "2024-12-31",
+        "api_calls": 2202,
+        "wall_seconds": 3.58
+      },
+      {
+        "as_of": "2025-12-31",
+        "api_calls": 1670,
+        "wall_seconds": 2.98
+      },
+      {
+        "as_of": "2026-11-20",
+        "api_calls": 2662,
+        "wall_seconds": 4.32
+      }
+    ],
+    "totals_replay": {
+      "runs": 12,
+      "api_calls": 54366,
+      "wall_seconds": 95.4,
+      "projected_hours_at_100_per_10s": 1.51
+    }
+  }
+}

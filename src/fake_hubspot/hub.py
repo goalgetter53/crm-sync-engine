@@ -10,6 +10,8 @@ Behaviours modelled (see README "Fake server" for the list and what is *not* mod
 * property validation: unknown/read-only properties, enumeration options, numbers, dates, emails,
   unique-value conflicts; emails are lower-cased and numbers canonicalised like HubSpot does
 * random 429s / 5xx and "applied but the response was lost" (502 after commit) fault injection
+* timeouts: the request is applied but the response is held back longer than the client waits
+* partial batch failures: one input of a batch write is rejected with a 207 per-item error
 * optional ``Idempotency-Key`` response cache (NOT a real HubSpot feature; off by default)
 """
 
@@ -46,6 +48,12 @@ class FaultConfig:
     p_5xx: float = 0.0
     p_apply_then_5xx: float = 0.0
     retry_after_s: float = 1.0
+    # Probability that a (non-search) request is applied but its response is delayed by
+    # ``timeout_delay_s`` (set it above the client's read timeout to simulate a timeout).
+    p_timeout: float = 0.0
+    timeout_delay_s: float = 0.0
+    # Probability that a batch upsert/update with 2+ inputs rejects one random input (207).
+    p_partial_batch: float = 0.0
     search_delay_ms: int = 0
     honor_idempotency_keys: bool = False
     seed: int = 0
@@ -56,6 +64,7 @@ class Resp:
     status: int
     body: Any = None
     headers: dict[str, str] = field(default_factory=dict)
+    delay_s: float = 0.0  # the HTTP layer waits this long before answering (timeout fault)
 
 
 @dataclass
@@ -146,9 +155,11 @@ class FakeHub:
             limited = self._check_limits(now, search)
             if limited is not None:
                 self.stats["429"] += 1
+                self.stats["429_rate_limit"] += 1
                 return limited
             if self.rng.random() < self.faults.p_429:
                 self.stats["429"] += 1
+                self.stats["429_injected"] += 1
                 return self._rate_limited("TEN_SECONDLY_ROLLING", self.faults.retry_after_s)
             if self.rng.random() < self.faults.p_5xx:
                 self.stats["5xx"] += 1
@@ -167,18 +178,25 @@ class FakeHub:
                 if self.rng.random() < self.faults.p_apply_then_5xx:
                     self.stats["applied_then_5xx"] += 1
                     return Resp(502, {"status": "error", "message": "Bad Gateway"})
+            # draw only when enabled, so seeded runs without the fault replay unchanged
+            p_t = self.faults.p_timeout
+            if not search and p_t > 0 and self.rng.random() < p_t:
+                self.stats["timeouts"] += 1
+                resp.delay_s = self.faults.timeout_delay_s
             return resp
 
     def _rate_limited(self, policy: str, retry_after: float) -> Resp:
+        # Body shape per developers.hubspot.com/docs/developer-tooling/platform/usage-guidelines
         ra = f"{retry_after:g}"
         return Resp(
             429,
             {
                 "status": "error",
-                "message": "You have reached your ten_secondly_rolling limit.",
+                "message": f"You have reached your {policy.lower()} limit.",
                 "errorType": "RATE_LIMIT",
                 "correlationId": str(uuid.uuid4()),
                 "policyName": policy,
+                "requestId": str(uuid.uuid4()),
             },
             {"Retry-After": ra},
         )
@@ -408,8 +426,17 @@ class FakeHub:
                 results.append(self.record_json(rec, props))
         return _multi(results, missing, obj, "get")
 
+    def _partial_reject(self, obj: str, inputs: list[JSON]) -> tuple[list[JSON], list[str]]:
+        """Fault injection: reject one random input of a multi-input batch write."""
+        p = self.faults.p_partial_batch
+        if len(inputs) < 2 or p <= 0 or self.rng.random() >= p:
+            return inputs, []
+        j = self.rng.randrange(len(inputs))
+        self.stats["partial_batch"] += 1
+        return inputs[:j] + inputs[j + 1 :], [str(inputs[j].get("id"))]
+
     def batch_upsert(self, obj: str, body: JSON) -> Resp:
-        inputs = self._inputs(body)
+        inputs, rejected = self._partial_reject(obj, self._inputs(body))
         now = self.clock.now_ms()
         prepared: list[tuple[JSON, Rec | None, dict[str, str | None]]] = []
         errors: list[JSON] = []
@@ -441,10 +468,10 @@ class FakeHub:
                 res["objectWriteTraceId"] = inp["objectWriteTraceId"]
             results.append(res)
         self.stats["records_written"] += len(results)
-        return Resp(200, {"status": "COMPLETE", "results": results})
+        return _multi(results, [], obj, "upsert", rejected)
 
     def batch_update(self, obj: str, body: JSON) -> Resp:
-        inputs = self._inputs(body)
+        inputs, rejected = self._partial_reject(obj, self._inputs(body))
         now = self.clock.now_ms()
         prepared, missing, errors = [], [], []
         for inp in inputs:
@@ -462,7 +489,7 @@ class FakeHub:
             self._apply(obj, rec, clean, now)
             results.append(self.record_json(rec, None))
         self.stats["records_written"] += len(results)
-        return _multi(results, missing, obj, "update")
+        return _multi(results, missing, obj, "update", rejected)
 
     def batch_archive(self, obj: str, body: JSON) -> Resp:
         now = self.clock.now_ms()
@@ -660,23 +687,37 @@ def _invalid(prop: str, message: str, code: str) -> JSON:
     return {"message": message, "code": code, "context": {"propertyName": [prop]}}
 
 
-def _multi(results: list[JSON], missing: list[str], obj: str, verb: str) -> Resp:
-    if not missing:
+def _multi(
+    results: list[JSON], missing: list[str], obj: str, verb: str, rejected: list[str] | None = None
+) -> Resp:
+    errors: list[JSON] = []
+    if missing:
+        errors.append(
+            {
+                "status": "error",
+                "category": "OBJECT_NOT_FOUND",
+                "message": f"Could not {verb} some {obj} objects; they may be deleted.",
+                "context": {"ids": missing},
+            }
+        )
+    if rejected:
+        errors.append(
+            {
+                "status": "error",
+                "category": "INTERNAL_ERROR",
+                "message": f"Could not {verb} some {obj} objects (injected partial failure).",
+                "context": {"ids": rejected},
+            }
+        )
+    if not errors:
         return Resp(200, {"status": "COMPLETE", "results": results})
     return Resp(
         207,
         {
             "status": "COMPLETE",
             "results": results,
-            "numErrors": len(missing),
-            "errors": [
-                {
-                    "status": "error",
-                    "category": "OBJECT_NOT_FOUND",
-                    "message": f"Could not {verb} some {obj} objects; they may be deleted.",
-                    "context": {"ids": missing},
-                }
-            ],
+            "numErrors": len(missing) + len(rejected or []),
+            "errors": errors,
         },
     )
 

@@ -67,8 +67,13 @@ SCHEMAS: dict[str, dict[str, PropertyDef]] = {
             PropertyDef("annualrevenue", "number"),
             PropertyDef("city"),
             PropertyDef("country"),
+            PropertyDef("website"),
+            PropertyDef("founded_year"),
             PropertyDef("lifecyclestage", "enumeration", LIFECYCLE),
             PropertyDef("warehouse_id", unique=True),
+            # custom (create it in a real portal, like warehouse_id): HubSpot's own `industry`
+            # is an enumeration that Wikidata's free-form industries do not map onto
+            PropertyDef("wikidata_industry"),
         )
     },
     "deals": {

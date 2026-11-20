@@ -3,6 +3,7 @@ single-record endpoints a naive integration would use, plus a ``/_admin`` contro
 
 from __future__ import annotations
 
+import asyncio
 from collections.abc import Callable
 from typing import Any
 
@@ -33,7 +34,7 @@ def create_app(hub: FakeHub | None = None) -> FastAPI:
     app = FastAPI(title="Fake HubSpot CRM", version="0.1.0", docs_url="/_admin/docs")
     app.state.hub = hub
 
-    def run(
+    async def run(
         request: Request,
         op: str,
         fn: Callable[[], Resp],
@@ -48,9 +49,10 @@ def create_app(hub: FakeHub | None = None) -> FastAPI:
             except ApiError as exc:
                 return exc.resp
 
-        return _to_response(
-            hub.call(op, request.headers, guarded, write=write, search=search, body=body)
-        )
+        resp = hub.call(op, request.headers, guarded, write=write, search=search, body=body)
+        if resp.delay_s > 0:
+            await asyncio.sleep(resp.delay_s)
+        return _to_response(resp)
 
     @app.post("/crm/v3/objects/{obj}/batch/{action}")
     async def batch(obj: str, action: str, request: Request) -> Response:
@@ -63,25 +65,25 @@ def create_app(hub: FakeHub | None = None) -> FastAPI:
         }
         if action not in handlers:
             return _to_response(Resp(404, {"status": "error", "message": "Not Found"}))
-        return run(
+        return await run(
             request, f"{obj} batch/{action}", handlers[action], body, write=action in WRITE_ACTIONS
         )
 
     @app.post("/crm/v3/objects/{obj}/search")
     async def search(obj: str, request: Request) -> Response:
         body = await _json(request)
-        return run(request, f"{obj} search", lambda: hub.search(obj, body), body, search=True)
+        return await run(request, f"{obj} search", lambda: hub.search(obj, body), body, search=True)
 
     @app.post("/crm/v3/objects/{obj}")
     async def create(obj: str, request: Request) -> Response:
         body = await _json(request)
-        return run(request, f"{obj} create", lambda: hub.create(obj, body), body, write=True)
+        return await run(request, f"{obj} create", lambda: hub.create(obj, body), body, write=True)
 
     @app.get("/crm/v3/objects/{obj}/{ident}")
     async def get(obj: str, ident: str, request: Request) -> Response:
         q = request.query_params
         props = q.get("properties")
-        return run(
+        return await run(
             request,
             f"{obj} get",
             lambda: hub.get(obj, ident, q.get("idProperty"), props.split(",") if props else None),
@@ -91,18 +93,18 @@ def create_app(hub: FakeHub | None = None) -> FastAPI:
     async def patch(obj: str, ident: str, request: Request) -> Response:
         body = await _json(request)
         idp = request.query_params.get("idProperty")
-        return run(
+        return await run(
             request, f"{obj} patch", lambda: hub.patch(obj, ident, idp, body), body, write=True
         )
 
     @app.delete("/crm/v3/objects/{obj}/{ident}")
     async def delete(obj: str, ident: str, request: Request) -> Response:
-        return run(request, f"{obj} delete", lambda: hub.delete(obj, ident), write=True)
+        return await run(request, f"{obj} delete", lambda: hub.delete(obj, ident), write=True)
 
     @app.post("/crm/v4/associations/{from_obj}/{to_obj}/batch/associate/default")
     async def associate(from_obj: str, to_obj: str, request: Request) -> Response:
         body = await _json(request)
-        return run(
+        return await run(
             request,
             "assoc batch/associate",
             lambda: hub.associate(from_obj, to_obj, body),
@@ -113,7 +115,7 @@ def create_app(hub: FakeHub | None = None) -> FastAPI:
     @app.post("/crm/v4/associations/{from_obj}/{to_obj}/batch/archive")
     async def disassociate(from_obj: str, to_obj: str, request: Request) -> Response:
         body = await _json(request)
-        return run(
+        return await run(
             request,
             "assoc batch/archive",
             lambda: hub.disassociate(from_obj, to_obj, body),
@@ -124,7 +126,7 @@ def create_app(hub: FakeHub | None = None) -> FastAPI:
     @app.post("/crm/v4/associations/{from_obj}/{to_obj}/batch/read")
     async def read_assocs(from_obj: str, to_obj: str, request: Request) -> Response:
         body = await _json(request)
-        return run(
+        return await run(
             request, "assoc batch/read", lambda: hub.read_assocs(from_obj, to_obj, body), body
         )
 
@@ -132,7 +134,7 @@ def create_app(hub: FakeHub | None = None) -> FastAPI:
     async def associate_one(
         from_obj: str, fid: str, to_obj: str, tid: str, request: Request
     ) -> Response:
-        return run(
+        return await run(
             request,
             "assoc single",
             lambda: hub.associate_one(from_obj, fid, to_obj, tid),

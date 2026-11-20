@@ -20,3 +20,6 @@ htmlcov/
 *.sqlite
 .env
 .crm-sync-state.db
+
+# Raw downloads for the real-data benchmark (derived CSVs live in bench/data/)
+data/real/

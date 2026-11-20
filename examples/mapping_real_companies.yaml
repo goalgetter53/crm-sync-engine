@@ -1,0 +1,33 @@
+# crm-sync mapping for the real-data benchmark: Wikidata companies (CC0) -> HubSpot companies.
+# The warehouse table is built by bench/run_real_bench.py from bench/data/wikidata_*.csv.
+# In a real portal, create two custom company properties first:
+#   warehouse_id (single-line text, "require unique values")  and  wikidata_industry (text).
+version: 1
+
+settings:
+  batch_size: 100               # HubSpot batch endpoints accept at most 100 inputs
+  search_lag_seconds: 30        # overlap for the eventually-consistent search index
+  warehouse_lookback_seconds: 300
+  requests_per_10s: 100         # Free/Starter private app; 190 on Professional/Enterprise
+  search_requests_per_second: 4 # HubSpot allows 5/s per account; keep headroom
+  daily_request_limit: 250000   # Free/Starter; 625k Professional, 1M Enterprise
+  revalidate_before_write: true
+
+objects:
+  companies:
+    crm_object: companies
+    table: companies
+    primary_key: qid
+    updated_at: updated_at
+    match: { warehouse: qid, crm: warehouse_id }   # Wikidata QID, e.g. Q312
+    fields:
+      - { crm: warehouse_id, warehouse: qid }
+      - { crm: name, warehouse: name }
+      - { crm: domain, warehouse: domain, transform: "lower(trim(value))" }
+      - { crm: website, warehouse: website }
+      - { crm: country, warehouse: country }
+      - { crm: city, warehouse: hq_city }
+      - { crm: wikidata_industry, warehouse: industry }
+      - { crm: founded_year, warehouse: founded_year }
+      - { crm: numberofemployees, warehouse: employees }
+      - { crm: annualrevenue, warehouse: revenue_usd }

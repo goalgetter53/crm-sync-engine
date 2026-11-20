@@ -1,4 +1,4 @@
-.PHONY: install lint typecheck test test-pg check bench fake demo plan apply clean
+.PHONY: install lint typecheck test test-pg check bench bench-real fake demo plan apply clean
 
 PY ?= python
 MAPPING ?= examples/mapping.yaml
@@ -25,6 +25,11 @@ check: lint typecheck test
 
 bench:
 	$(PY) bench/run_bench.py
+
+# Real public data: Wikidata companies + their dated history (CC0). Uses the committed CSVs in
+# bench/data/; pass ARGS=--refresh to re-download (cached in data/real/).
+bench-real:
+	$(PY) bench/run_real_bench.py $(ARGS)
 
 fake:
 	$(PY) -m fake_hubspot --port 8090
